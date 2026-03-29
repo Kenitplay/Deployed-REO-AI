@@ -3,7 +3,7 @@ import requests
 
 st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 
-API_URL = "https://deployed-reo-ai-cf3syvobgnqkkucgnxdgmj.streamlit.app/predict"  # change if deployed
+API_URL = "https://deployed-reo-ai-cf3syvobgnqkkucgnxdgmj.streamlit.app"  # change if deployed
 
 st.title("🔬 Research Title Classifier")
 
