@@ -4,9 +4,7 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
-
-# MUST BE THE FIRST STREAMLIT COMMAND
-st.set_page_config(page_title="Research Classifier", page_icon="🔬")
+import sys
 
 # Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -23,7 +21,7 @@ def load_model():
 
 model, tokenizer, le, max_len = load_model()
 
-# API function
+# Prediction function
 def predict_api(title):
     seq = tokenizer.texts_to_sequences([title])
     padded = pad_sequences(seq, maxlen=max_len)
@@ -33,22 +31,28 @@ def predict_api(title):
     result = le.inverse_transform([idx])[0]
     
     return {
+        "success": True,
+        "title": title,
         "prediction": result,
         "confidence": round(confidence, 2)
     }
 
-# Check if this is an API call (using query parameters)
+# Check for API request BEFORE any Streamlit UI code
 query_params = st.experimental_get_query_params()
+
 if "title" in query_params:
     title_param = query_params["title"][0] if isinstance(query_params["title"], list) else query_params["title"]
     result = predict_api(title_param)
-    st.json(result)
+    
+    # Clear all Streamlit UI and just return JSON
+    st.empty()
+    st.markdown(f"```json\n{result}\n```")
     st.stop()
 
-# Web UI (only shown when not in API mode)
+# Web UI mode (only shown when no API request)
+st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 st.title("🔬 Research Title Classifier")
 
-# Input
 title = st.text_area("Enter Research Title", height=100)
 
 if st.button("Classify"):
@@ -56,11 +60,3 @@ if st.button("Classify"):
         result = predict_api(title)
         st.success(f"**Prediction: {result['prediction']}**")
         st.metric("Confidence", f"{result['confidence']:.1f}%")
-
-# Show API info in sidebar
-with st.sidebar:
-    st.markdown("## 📡 API Usage")
-    st.markdown("""
-    ### Call the API:
-    `http://localhost:8501/?title=your_research_title`
-    """)
