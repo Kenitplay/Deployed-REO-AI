@@ -1,5 +1,5 @@
 import streamlit as st
-from model_utils import predict_title
+from models_utils import predict_title
 
 st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 
