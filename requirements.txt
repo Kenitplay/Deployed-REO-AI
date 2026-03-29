@@ -1,5 +1,5 @@
 Flask==2.3.3
-tensorflow==2.15.0
-numpy>=1.22,<1.24  # Allows 1.22.x or 1.23.x
+tensorflow==2.16.2
+numpy==1.26.3 # numpy>=1.22,<1.24  # Allows 1.22.x or 1.23.x
 gunicorn==21.2.0
-h5py==3.10.0
+h5py==3.11.0
