@@ -1,30 +1,21 @@
 import streamlit as st
-from models_utils import predict_title
+import requests
 
 st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 
+API_URL = "https://deployed-reo-ai-cf3syvobgnqkkucgnxdgmj.streamlit.app/predict"  # change if deployed
+
 st.title("🔬 Research Title Classifier")
-st.markdown("---")
 
-title = st.text_area(
-    "Enter Research Title",
-    height=100,
-    placeholder="e.g., Deep learning for medical image segmentation"
-)
+title = st.text_area("Enter Research Title")
 
-if st.button("🔍 Classify"):
+if st.button("Classify"):
     if title.strip():
         with st.spinner("Analyzing..."):
-            result = predict_title(title)
+            res = requests.get(API_URL, params={"title": title})
+            data = res.json()
 
-            st.success(f"Prediction: {result['prediction']}")
-            st.metric("Confidence", f"{result['confidence']}%")
+            st.success(f"Prediction: {data['prediction']}")
+            st.metric("Confidence", f"{data['confidence']}%")
     else:
-        st.warning("Please enter a research title")
-
-st.markdown("---")
-
-with st.expander("📝 Example Titles"):
-    st.write("• Deep learning for medical image segmentation")
-    st.write("• Blockchain for voting systems")
-    st.write("• NLP for sentiment analysis")
+        st.warning("Enter a title first")

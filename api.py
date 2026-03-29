@@ -1,24 +1,23 @@
 from fastapi import FastAPI
 from pydantic import BaseModel
-from models_utils import predict_title
+from model_utils import predict_title
 
-app = FastAPI()
+app = FastAPI(title="Research Classifier API")
 
-# Request body (for POST)
-class TitleRequest(BaseModel):
-    title: str
-
-# Health check
+# Root check
 @app.get("/")
 def home():
-    return {"message": "Research Classifier API is running"}
+    return {"status": "running"}
 
-# GET request (easy for browser / terminal)
+# GET endpoint (browser / terminal friendly)
 @app.get("/predict")
 def predict_get(title: str):
     return predict_title(title)
 
-# POST request (best practice for apps)
+# POST endpoint (best practice)
+class Request(BaseModel):
+    title: str
+
 @app.post("/predict")
-def predict_post(data: TitleRequest):
-    return predict_title(data.title)
+def predict_post(req: Request):
+    return predict_title(req.title)
