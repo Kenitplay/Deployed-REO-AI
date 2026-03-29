@@ -4,7 +4,9 @@ import numpy as np
 import tensorflow as tf
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import os
-import json
+
+# MUST BE THE FIRST STREAMLIT COMMAND
+st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 
 # Suppress TensorFlow logs
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -44,7 +46,6 @@ if "title" in query_params:
     st.stop()
 
 # Web UI (only shown when not in API mode)
-st.set_page_config(page_title="Research Classifier", page_icon="🔬")
 st.title("🔬 Research Title Classifier")
 
 # Input
@@ -56,4 +57,10 @@ if st.button("Classify"):
         st.success(f"**Prediction: {result['prediction']}**")
         st.metric("Confidence", f"{result['confidence']:.1f}%")
 
-# Show API info in sideba
+# Show API info in sidebar
+with st.sidebar:
+    st.markdown("## 📡 API Usage")
+    st.markdown("""
+    ### Call the API:
+    `http://localhost:8501/?title=your_research_title`
+    """)
